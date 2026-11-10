@@ -1,0 +1,43 @@
+{% macro post_meta(post, tag_page="") -%}
+<div class="post-meta">
+  <time datetime="{{ post.published }}">{{ post.published }}</time>
+  {% for tag in post.tags %}
+  <a class="post-tag" href="{{ tag_page }}?tag={{ tag | urlencode }}">{{ tag }}</a>
+  {% endfor %}
+</div>
+{%- endmacro %}
+<!doctype html>
+{{ generated | safe }}
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="{{ description }}">
+  <title>{{ title }} · Rongjie</title>
+  <link rel="icon" href="../assets/mark.svg" type="image/svg+xml">
+  <script src="../assets/theme.js"></script>
+  <script src="../assets/{{ script }}" defer></script>
+  <link rel="stylesheet" href="../assets/site.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到正文</a>
+  <header class="site-header">
+    <div class="container header-row">
+      <a class="brand" href="../index.html">Rongjie</a>
+      <nav class="site-nav" aria-label="主导航">
+        <a href="../index.html">About</a>
+        <a href="../blog/index.html" aria-current="{{ current }}">Blog</a>
+        <a href="../showcase/index.html">Showcase</a>
+      </nav>
+      <button class="theme-toggle" id="theme" type="button" aria-label="深色模式" aria-pressed="false" hidden>
+        <svg class="icon theme-moon" viewBox="0 0 16 16" aria-hidden="true"><path d="M13.8 9.3A5.9 5.9 0 0 1 6.7 2.2a5.9 5.9 0 1 0 7.1 7.1Z"/></svg>
+        <svg class="icon theme-sun" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="3"/><path d="M8 1.5v1m0 11v1m6.5-6.5h-1m-11 0h-1m11.1-4.6-.7.7m-7.8 7.8-.7.7m9.2 0-.7-.7M4.1 4.1l-.7-.7"/></svg>
+      </button>
+    </div>
+  </header>
+
+{% block main %}{% endblock %}
+
+  <footer class="container site-footer">© 2026 Rongjie</footer>
+</body>
+</html>

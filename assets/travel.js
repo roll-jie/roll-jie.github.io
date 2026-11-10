@@ -11,6 +11,7 @@
 
     photosByProvince.set(province, filenames.map(filename => ({
       ...travel.photoDetails?.[province]?.[filename],
+      name: filename,
       province,
       src: `photos/${encodeURIComponent(province)}/${encodeURIComponent(filename)}`,
     })));
@@ -38,16 +39,18 @@
     status.textContent = photos.length ? "" : "暂无照片";
 
     gallery.replaceChildren(...photos.map(photo => {
-      const title = photo.title?.trim();
+      // 图注默认取文件名（去掉扩展名），travel.photoDetails 里配置的 title 仍可覆盖。
+      const title = photo.title?.trim() || photo.name.replace(/\.[^./]+$/, "");
       const card = document.createElement("figure");
       const link = document.createElement("a");
       const img = document.createElement("img");
       const caption = document.createElement("figcaption");
       link.href = photo.src;
       img.src = photo.src;
-      img.alt = photo.alt || title || `${photo.province}旅行照片`;
+      img.alt = photo.alt || `${photo.province} · ${title}`;
+      img.title = title;
       img.loading = "lazy";
-      caption.textContent = title ? `${title} · ${photo.province}` : photo.province;
+      caption.textContent = title;
       link.append(img);
       card.append(link, caption);
       return card;

@@ -4,7 +4,19 @@
   const gallery = document.getElementById("photos");
   const heading = document.getElementById("gallery-heading");
   const status = document.getElementById("gallery-status");
-  const visited = new Set([...travel.visited, ...travel.photos.map(photo => photo.province)]);
+  const photosByProvince = new Map();
+  for (const province of new Set([...travel.visited, ...Object.keys(travelPhotosByProvince)])) {
+    const filenames = travelPhotosByProvince[province];
+    if (!filenames?.length || !Object.hasOwn(chinaMap.provinces, province)) continue;
+
+    photosByProvince.set(province, filenames.map(filename => ({
+      ...travel.photoDetails?.[province]?.[filename],
+      province,
+      src: `photos/${encodeURIComponent(province)}/${encodeURIComponent(filename)}`,
+    })));
+  }
+  const allPhotos = [...photosByProvince.values()].flat();
+  const visited = new Set([...travel.visited, ...photosByProvince.keys()]);
   const groups = new Map();
   const svgNamespace = "http://www.w3.org/2000/svg";
 
@@ -22,7 +34,7 @@
     }
 
     heading.textContent = selectedProvince ? `${selectedProvince} · 旅行照片` : "旅行照片";
-    const photos = travel.photos.filter(photo => !selectedProvince || photo.province === selectedProvince);
+    const photos = selectedProvince ? (photosByProvince.get(selectedProvince) ?? []) : allPhotos;
     status.textContent = photos.length ? "" : "暂无照片";
 
     gallery.replaceChildren(...photos.map(photo => {
